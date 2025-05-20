@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -30,6 +31,12 @@ public class CadastroUsuariosController {
 
     @FXML
     private ComboBox<String> cbPerfil;
+    
+    @FXML
+    private DatePicker dData;
+
+    @FXML
+    private TextField txtEmail;
 
     @FXML
     private TextField txtLogin;
@@ -96,9 +103,9 @@ public class CadastroUsuariosController {
         }
     }
 
-    void incluir(String nome, String fone, 
+    void incluir(String nome, String fone,String data, String email, 
         String login, String senha, String perfil) throws SQLException {
-        Usuario usuario = new Usuario(nome, fone, login,
+        Usuario usuario = new Usuario(nome, fone, data, email, login,
         senha, perfil);
         new UsuarioDAO().salvar(usuario);
         if(onUsuarioSalvo != null){
@@ -109,10 +116,9 @@ public class CadastroUsuariosController {
         stageCadastroUsuarios.close();
     }
     
-    void alterar(int id, String nome, String fone, String login,
+    void alterar(int id, String nome, String data, String email, String fone, String login,
             String senha, String perfil) throws SQLException{
-        Usuario usuarioAlterado = new Usuario(id, nome, fone, login,
-        senha, perfil);
+        Usuario usuarioAlterado = new Usuario(id, nome, email , data, fone, login,senha, perfil);
         new UsuarioDAO().alterar(usuarioAlterado);
         if(onUsuarioSalvo != null){
             onUsuarioSalvo.run();

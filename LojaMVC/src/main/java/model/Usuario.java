@@ -10,15 +10,19 @@ public class Usuario implements Serializable {
 
     private int id;
     private String nome;
+    private String email;
+    private String data;
     private String fone;
     private String login;
     private String senha;
     private String perfil;
 
     // Método construtor com todos os parâmetros
-    public Usuario(int id, String nome, String fone, String login, String senha, String perfil) {
+    public Usuario(int id, String nome, String email, String data, String fone, String login, String senha, String perfil) {
         this.id = id;
         this.nome = nome;
+        this.email = email;
+        this.data = data;
         this.fone = fone;
         this.login = login;
         this.senha = senha;
@@ -26,8 +30,10 @@ public class Usuario implements Serializable {
     }
 
     // Método construtor com todos os parâmetros menos ID
-    public Usuario(String nome, String fone, String login, String senha, String perfil) {
+    public Usuario(String nome, String email, String data,  String fone, String login, String senha, String perfil) {
         this.nome = nome;
+        this.data = data; 
+        this.email = email;
         this.fone = fone;
         this.login = login;
         this.senha = senha;
@@ -55,6 +61,18 @@ public class Usuario implements Serializable {
 
     public String getNome() {
         return nome;
+    }
+    public  String getEmail (){
+        return email;
+    }
+    public void setEMail (String email){
+        this.email = email;
+    }
+    public String getData (){
+        return data;
+    }
+    public void setData(String data){
+    this.data = data ;
     }
 
     public void setNome(String nome) {
@@ -101,7 +119,25 @@ public class Usuario implements Serializable {
         }
         return idProperty;
     }
-
+    
+    private transient StringProperty emailProperty;
+    
+    public StringProperty emailProperty() {
+        if (emailProperty == null) {
+            emailProperty = new SimpleStringProperty(email);
+        }
+        return emailProperty;
+    }
+    
+    private transient StringProperty dataProperty;
+    
+    public StringProperty dataProperty() {
+        if (dataProperty == null) {
+            dataProperty = new SimpleStringProperty(data);
+        }
+        return dataProperty;
+    }
+    
     private transient StringProperty nomeProperty;
 
     public StringProperty nomeProperty() {
@@ -146,5 +182,7 @@ public class Usuario implements Serializable {
         }
         return perfilProperty;
     }
+    
+    
 
 }
