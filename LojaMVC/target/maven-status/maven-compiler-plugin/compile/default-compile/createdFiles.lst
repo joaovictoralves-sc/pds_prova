@@ -5,5 +5,3 @@ model\GenericDAO.class
 controller\LoginController.class
 model\LoginDAO.class
 module-info.class
-model\UsuarioDAO.class
-util\AlertaUtil.class
