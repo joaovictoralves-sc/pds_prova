@@ -1,8 +1,11 @@
 package model;
 
 import java.io.Serializable;
+import java.sql.Date;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -10,37 +13,34 @@ public class Usuario implements Serializable {
 
     private int id;
     private String nome;
-    private String email;
-    private String data;
     private String fone;
     private String login;
     private String senha;
     private String perfil;
+    private String email;
+    private Date data;  // java.sql.Date
 
-    // Método construtor com todos os parâmetros
-    public Usuario(int id, String nome, String email, String data, String fone, String login, String senha, String perfil) {
+    public Usuario(int id, String nome, String fone, String login, String senha, String perfil, String email, Date data) {
         this.id = id;
         this.nome = nome;
+        this.fone = fone;
+        this.login = login;
+        this.senha = senha;
+        this.perfil = perfil;
         this.email = email;
         this.data = data;
-        this.fone = fone;
-        this.login = login;
-        this.senha = senha;
-        this.perfil = perfil;
     }
 
-    // Método construtor com todos os parâmetros menos ID
-    public Usuario(String nome, String email, String data,  String fone, String login, String senha, String perfil) {
+    public Usuario(String nome, String fone, String login, String senha, String perfil, String email, Date data) {
         this.nome = nome;
-        this.data = data; 
-        this.email = email;
         this.fone = fone;
         this.login = login;
         this.senha = senha;
         this.perfil = perfil;
+        this.email = email;
+        this.data = data;
     }
 
-    // Método construtor para o login
     public Usuario(String login, String senha, String perfil) {
         this.login = login;
         this.senha = senha;
@@ -48,98 +48,68 @@ public class Usuario implements Serializable {
     }
 
     public Usuario() {
-
     }
 
+    // Getters e Setters
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
-
     public String getNome() {
         return nome;
     }
-    public  String getEmail (){
-        return email;
-    }
-    public void setEMail (String email){
-        this.email = email;
-    }
-    public String getData (){
-        return data;
-    }
-    public void setData(String data){
-    this.data = data ;
-    }
-
     public void setNome(String nome) {
         this.nome = nome;
     }
-
     public String getFone() {
         return fone;
     }
-
     public void setFone(String fone) {
         this.fone = fone;
     }
-
     public String getLogin() {
         return login;
     }
-
     public void setLogin(String login) {
         this.login = login;
     }
-
     public String getSenha() {
         return senha;
     }
-
     public void setSenha(String senha) {
         this.senha = senha;
     }
-
     public String getPerfil() {
         return perfil;
     }
-
     public void setPerfil(String perfil) {
         this.perfil = perfil;
     }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public Date getData() {
+        return data;
+    }
+    public void setData(Date data) {
+        this.data = data;
+    }
 
+    // Propriedades JavaFX para Bindings (transient para não serializar)
     private transient IntegerProperty idProperty;
-
     public IntegerProperty idProperty() {
         if (idProperty == null) {
             idProperty = new SimpleIntegerProperty(id);
         }
         return idProperty;
     }
-    
-    private transient StringProperty emailProperty;
-    
-    public StringProperty emailProperty() {
-        if (emailProperty == null) {
-            emailProperty = new SimpleStringProperty(email);
-        }
-        return emailProperty;
-    }
-    
-    private transient StringProperty dataProperty;
-    
-    public StringProperty dataProperty() {
-        if (dataProperty == null) {
-            dataProperty = new SimpleStringProperty(data);
-        }
-        return dataProperty;
-    }
-    
-    private transient StringProperty nomeProperty;
 
+    private transient StringProperty nomeProperty;
     public StringProperty nomeProperty() {
         if (nomeProperty == null) {
             nomeProperty = new SimpleStringProperty(nome);
@@ -148,7 +118,6 @@ public class Usuario implements Serializable {
     }
 
     private transient StringProperty foneProperty;
-
     public StringProperty foneProperty() {
         if (foneProperty == null) {
             foneProperty = new SimpleStringProperty(fone);
@@ -157,7 +126,6 @@ public class Usuario implements Serializable {
     }
 
     private transient StringProperty loginProperty;
-
     public StringProperty loginProperty() {
         if (loginProperty == null) {
             loginProperty = new SimpleStringProperty(login);
@@ -166,7 +134,6 @@ public class Usuario implements Serializable {
     }
 
     private transient StringProperty senhaProperty;
-
     public StringProperty senhaProperty() {
         if (senhaProperty == null) {
             senhaProperty = new SimpleStringProperty(senha);
@@ -175,14 +142,26 @@ public class Usuario implements Serializable {
     }
 
     private transient StringProperty perfilProperty;
-
     public StringProperty perfilProperty() {
         if (perfilProperty == null) {
             perfilProperty = new SimpleStringProperty(perfil);
         }
         return perfilProperty;
     }
-    
-    
 
+    private transient StringProperty emailProperty;
+    public StringProperty emailProperty() {
+        if (emailProperty == null) {
+            emailProperty = new SimpleStringProperty(email);
+        }
+        return emailProperty;
+    }
+
+    private transient ObjectProperty<Date> dataProperty;
+    public ObjectProperty<Date> dataProperty() {
+        if (dataProperty == null) {
+            dataProperty = new SimpleObjectProperty<>(data);
+        }
+        return dataProperty;
+    }
 }

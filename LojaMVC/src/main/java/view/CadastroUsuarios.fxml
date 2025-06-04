@@ -132,7 +132,7 @@
                         <Label text="Email" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
                         <Label text="Data de Nascimento" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                         <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <DatePicker fx:id="dData" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <DatePicker fx:id="Data" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                </children>

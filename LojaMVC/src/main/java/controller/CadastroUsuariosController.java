@@ -1,6 +1,8 @@
 package controller;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,13 +16,14 @@ import javafx.stage.Stage;
 import model.Usuario;
 import model.UsuarioDAO;
 import util.AlertaUtil;
+import util.LimitarCaracter;
 
 public class CadastroUsuariosController {
     Stage stageCadastroUsuarios;
     Usuario usuarioSelecionado;
-    private Runnable onUsuarioSalvo; //Este é o callback
-    
-      @FXML
+    private Runnable onUsuarioSalvo;
+
+    @FXML
     private Button btnExcluir;
 
     @FXML
@@ -33,7 +36,7 @@ public class CadastroUsuariosController {
     private ComboBox<String> cbPerfil;
     
     @FXML
-    private DatePicker dData;
+    private DatePicker Data;
 
     @FXML
     private TextField txtEmail;
@@ -49,14 +52,15 @@ public class CadastroUsuariosController {
 
     @FXML
     private TextField txtTelefone;
+    
+    LimitarCaracter limitador = new LimitarCaracter();
 
     @FXML
     void btnExcluirClick(ActionEvent event) throws SQLException {
-        Optional<ButtonType> resultado = AlertaUtil.mostrarConfirmacao("Atenção",
-                "Tem certeza que quer excluir o registro?");
-        if(resultado.isPresent()){
+        Optional<ButtonType> resultado = AlertaUtil.mostrarConfirmacao("Atenção", "Tem certeza que quer excluir o registro?");
+        if (resultado.isPresent()) {
             ButtonType botaoPressionado = resultado.get();
-            if(botaoPressionado == ButtonType.OK){
+            if (botaoPressionado == ButtonType.OK) {
                 excluir(usuarioSelecionado.getId());
             }
         }
@@ -69,25 +73,48 @@ public class CadastroUsuariosController {
 
     @FXML
     void btnIncluirAlterarClick(ActionEvent event) throws SQLException {
-        if(usuarioSelecionado == null){
-            incluir(txtNome.getText(),
-            txtTelefone.getText(), txtLogin.getText(),
-            txtSenha.getText(), cbPerfil.getValue());
+        String nome = txtNome.getText();
+        String telefone = txtTelefone.getText();
+        String login = txtLogin.getText();
+        String senha = txtSenha.getText();
+        String perfil = cbPerfil.getValue();
+        String email = txtEmail.getText();
+        LocalDate data = Data.getValue(); 
+
+        java.sql.Date dataConvertida = null;
+
+        if (data != null) {
+            dataConvertida = java.sql.Date.valueOf(data);
+        }
+
+        if (nome.isEmpty() || telefone.isEmpty() || login.isEmpty() ||
+            senha.isEmpty() || email.isEmpty()) {
+            AlertaUtil.mostrarErro("Erro", "Todos os campos devem ser preenchidos.");
+            return;
+        }
+
+        if (limitador.ValidaFormatoTelefone(txtTelefone.getText())) {
+            return;
+        }
+
+        if (limitador.ValidaFormatEmail(txtEmail.getText())) {
+            return;
+        }
+
+        if (usuarioSelecionado == null) {
+            incluir(nome, telefone, login, senha, perfil, email, dataConvertida);
         } else {
-            alterar(usuarioSelecionado.getId(), txtNome.getText(),
-                    txtTelefone.getText(), txtLogin.getText(),
-                    txtSenha.getText(), cbPerfil.getValue());
+            alterar(usuarioSelecionado.getId(), nome, telefone, login, senha, perfil, email, dataConvertida);
         }
     }
 
-    
-    void setStage(Stage telaCadastroUsuarios){
+    void setStage(Stage telaCadastroUsuarios) {
         this.stageCadastroUsuarios = telaCadastroUsuarios;
     }
-    
-    void ajustarElementosJanela(Usuario user){
+
+    void ajustarElementosJanela(Usuario user) {
         this.usuarioSelecionado = user;
-        if(user == null){ //Incluir
+        if (user == null) {
             txtNome.requestFocus();
             btnExcluir.setVisible(false);
             btnIncluirAlterar.setText("Salvar");
@@ -98,48 +125,47 @@ public class CadastroUsuariosController {
             txtTelefone.setText(user.getFone());
             txtLogin.setText(user.getLogin());
             txtSenha.setText(user.getSenha());
+            txtEmail.setText(user.getEmail());
+            if (user.getData()!= null) {
+                Data.setValue(user.getData().toLocalDate()); 
+            } else {
+                Data.setValue(null);
+            }
             cbPerfil.getItems().addAll("admin", "user");
             cbPerfil.setValue(user.getPerfil());
         }
     }
 
-    void incluir(String nome, String fone,String data, String email, 
-        String login, String senha, String perfil) throws SQLException {
-        Usuario usuario = new Usuario(nome, fone, data, email, login,
-        senha, perfil);
+    void incluir(String nome, String fone, String login, String senha, String perfil, String email, Date data) throws SQLException {
+        Usuario usuario = new Usuario(nome, fone, login, senha, perfil, email, data);
         new UsuarioDAO().salvar(usuario);
-        if(onUsuarioSalvo != null){
+        if (onUsuarioSalvo != null) {
             onUsuarioSalvo.run();
         }
-        AlertaUtil.mostrarInformacao("Informação",
-                "Registro inserido com sucesso!");
+        AlertaUtil.mostrarInformacao("Informação", "Registro inserido com sucesso!");
         stageCadastroUsuarios.close();
     }
-    
-    void alterar(int id, String nome, String data, String email, String fone, String login,
-            String senha, String perfil) throws SQLException{
-        Usuario usuarioAlterado = new Usuario(id, nome, email , data, fone, login,senha, perfil);
+
+    void alterar(int id, String nome, String fone, String login, String senha, String perfil, String email, Date data) throws SQLException {
+        Usuario usuarioAlterado = new Usuario(id, nome, fone, login, senha, perfil, email, data);
         new UsuarioDAO().alterar(usuarioAlterado);
-        if(onUsuarioSalvo != null){
+        if (onUsuarioSalvo != null) {
             onUsuarioSalvo.run();
         }
-         AlertaUtil.mostrarInformacao("Informação",
-                "Registro alterado com sucesso!");
+        AlertaUtil.mostrarInformacao("Informação", "Registro alterado com sucesso!");
         stageCadastroUsuarios.close();
     }
-    
-    public void setOnUsuarioSalvo(Runnable callback){
+
+    public void setOnUsuarioSalvo(Runnable callback) {
         this.onUsuarioSalvo = callback;
     }
-    
-    public void excluir(int id) throws SQLException{
+
+    public void excluir(int id) throws SQLException {
         new UsuarioDAO().excluir(id);
-         if(onUsuarioSalvo != null){
+        if (onUsuarioSalvo != null) {
             onUsuarioSalvo.run();
         }
-         AlertaUtil.mostrarInformacao("Informação", 
-                 "Registro excluído com sucesso!");
-         stageCadastroUsuarios.close();
+        AlertaUtil.mostrarInformacao("Informação", "Registro excluído com sucesso!");
+        stageCadastroUsuarios.close();
     }
-    
 }

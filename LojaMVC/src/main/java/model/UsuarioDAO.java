@@ -8,32 +8,42 @@ import javafx.collections.ObservableList;
 
 public class UsuarioDAO extends GenericDAO {
 
-    // Método para salvar usuarios
     public void salvar(Usuario usuario) throws SQLException {
-        String insert = "INSERT INTO USUARIOS(nome, fone, email, data, login, senha, perfil) VALUES(?,?,?,?,?)";
-          save(insert, usuario.getNome(), usuario.getFone(), usuario.getLogin(), usuario.getSenha(), usuario.getPerfil());
+        String insert = "INSERT INTO USUARIOS(nome, fone, login, senha, perfil, email, data) VALUES(?,?,?,?,?,?,?)";
+        save(insert,
+            usuario.getNome(),
+            usuario.getFone(),
+            usuario.getLogin(),
+            usuario.getSenha(),
+            usuario.getPerfil(),
+            usuario.getEmail(),
+            usuario.getData()  // java.sql.Date
+        );
     }
 
-    // Método para alterar usuarios
     public void alterar(Usuario usuario) throws SQLException {
-        String update = "UPDATE USUARIOS " + "SET nome = ?, fone = ?, login = ?, senha = ?, perfil = ?, email = ?, data = ?  "
-                + "WHERE ID = ?";
-		update(update, usuario.getId(), usuario.getNome(), usuario.getFone(), usuario.getLogin(),
-				usuario.getSenha(), usuario.getPerfil());
+        String update = "UPDATE USUARIOS SET nome = ?, fone = ?, login = ?, senha = ?, perfil = ?, email = ?, data = ? WHERE id = ?";
+        update(update,
+            usuario.getNome(),
+            usuario.getFone(),
+            usuario.getLogin(),
+            usuario.getSenha(),
+            usuario.getPerfil(),
+            usuario.getEmail(),
+            usuario.getData(), // java.sql.Date
+            usuario.getId()
+        );
     }
 
-    // Método para excluir usuarios
     public void excluir(long id) throws SQLException {
         String delete = "DELETE FROM USUARIOS WHERE ID = ?";
         delete(delete, id);
     }
 
-    // Método para buscar usuários
     public ObservableList<Usuario> selecionarUsuarios() throws SQLException {
         ObservableList<Usuario> lista = FXCollections.observableArrayList();
         String sql = "SELECT * FROM USUARIOS";
         PreparedStatement pstm = conectarDAO().prepareStatement(sql);
-
         ResultSet rs = pstm.executeQuery();
 
         while (rs.next()) {
@@ -44,9 +54,8 @@ public class UsuarioDAO extends GenericDAO {
             usuario.setLogin(rs.getString("login"));
             usuario.setSenha(rs.getString("senha"));
             usuario.setPerfil(rs.getString("perfil"));
-            usuario.setData(rs.getString("data"));
-            usuario.setEMail(rs.getString("email"));
-
+            usuario.setEmail(rs.getString("email"));
+            usuario.setData(rs.getDate("data"));  // java.sql.Date direto do ResultSet
             lista.add(usuario);
         }
 
@@ -57,13 +66,13 @@ public class UsuarioDAO extends GenericDAO {
         return lista;
     }
 
-    // Método para buscar um usuário por ID
     public Usuario selecionarUsuario(Long iduser) throws SQLException {
         Usuario usuario = new Usuario();
         String sql = "SELECT * FROM USUARIOS WHERE ID = ?";
         PreparedStatement pstm = conectarDAO().prepareStatement(sql);
         pstm.setLong(1, iduser);
         ResultSet rs = pstm.executeQuery();
+
         while (rs.next()) {
             usuario.setId(rs.getInt("id"));
             usuario.setNome(rs.getString("nome"));
@@ -71,8 +80,8 @@ public class UsuarioDAO extends GenericDAO {
             usuario.setLogin(rs.getString("login"));
             usuario.setSenha(rs.getString("senha"));
             usuario.setPerfil(rs.getString("perfil"));
-            usuario.setData(rs.getString("data"));
-            usuario.setEMail(rs.getString("email"));
+            usuario.setEmail(rs.getString("email"));
+            usuario.setData(rs.getDate("data")); // java.sql.Date
         }
 
         rs.close();
@@ -81,5 +90,4 @@ public class UsuarioDAO extends GenericDAO {
 
         return usuario;
     }
-
 }
