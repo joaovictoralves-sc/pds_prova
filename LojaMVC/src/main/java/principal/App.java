@@ -1,5 +1,3 @@
-package principal;
-
 import controller.LoginController;
 import java.io.File;
 import javafx.application.Application;
@@ -10,6 +8,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import model.Cliente;
+import model.ClienteDAO;
 
 public class App extends Application {
 
@@ -25,14 +26,24 @@ public class App extends Application {
         telaLogin.setOnShown(event -> {
             lc.abrirJanela();
         });
-        Scene scene = new Scene (root);
-        scene.getStylesheets().add(getClass().getResource(""
-                + "/css/login.css").toExternalForm());
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/login.css").toExternalForm());
         telaLogin.setScene(scene);
         telaLogin.show();
     }
 
     public static void main(String[] args) {
+        ClienteDAO clienteDAO = new ClienteDAO();
+        
+        Cliente novoCliente = new Cliente();
+        novoCliente.setNome("João Victor ALves");
+        novoCliente.setTelefone("999999999");
+        novoCliente.setEndereco("Rua x");
+        novoCliente.setDataNascimento(Date.valueOf("2000-05-05"));
+        
+        clienteDAO.inserirCliente(novoCliente);
+        
+        clienteDAO.listarClientes();
         launch();
     }
 
