@@ -1,3 +1,5 @@
+package principal;
+
 import controller.LoginController;
 import java.io.File;
 import javafx.application.Application;
@@ -44,7 +46,7 @@ public class App extends Application {
         clienteDAO.inserirCliente(novoCliente);
         
         clienteDAO.listarClientes();
-        launch();
+        //launch();
     }
 
 }
